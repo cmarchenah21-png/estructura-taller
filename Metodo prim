@@ -1,0 +1,63 @@
+package javaapplication176;
+import java.util.*;
+
+public class MetodoPrim {
+    static final int V = 6;
+ 
+    static int[][] graph = {
+        {0, 6, 1, 5, 0, 0},
+        {6, 0, 2, 0, 5, 0},
+        {1, 2, 0, 2, 6, 0},
+        {5, 0, 2, 0, 0, 4},
+        {0, 5, 6, 0, 0, 3},
+        {0, 0, 0, 4, 3, 0}
+    };
+
+    public static void prim(int start) {
+        boolean[] visited = new boolean[V];
+        int[] minEdge = new int[V];  
+        int[] parent = new int[V];   
+        Arrays.fill(minEdge, Integer.MAX_VALUE);
+        minEdge[start] = 0;
+        parent[start] = -1;  
+
+        int totalCost = 0;
+
+        for (int i = 0; i < V; i++) {
+            int u = -1;
+
+      
+            for (int v = 0; v < V; v++) {
+                if (!visited[v] && (u == -1 || minEdge[v] < minEdge[u])) {
+                    u = v;
+                }
+            }
+
+            visited[u] = true;
+            totalCost += minEdge[u];
+
+      
+            if (parent[u] != -1) {
+                System.out.println("Arista seleccionada: " + parent[u] + " - " + u + " (" + minEdge[u] + ")");
+            }
+
+          
+            for (int v = 0; v < V; v++) {
+                if (graph[u][v] != 0 && !visited[v] && graph[u][v] < minEdge[v]) {
+                    minEdge[v] = graph[u][v];
+                    parent[v] = u;
+                }
+            }
+        }
+
+        System.out.println("Costo total del MST: " + totalCost + "\n");
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Iniciando Prim desde vértice 0:");
+        prim(0);
+
+        System.out.println("Iniciando Prim desde vértice 2:");
+        prim(2);
+    }
+}
