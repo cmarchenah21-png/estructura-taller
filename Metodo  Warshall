@@ -1,0 +1,58 @@
+package javaapplication11;
+public class AlgoritmoWarshall {
+
+    static final int N = 4; // Número de nodos (0, 1, 2, 3)
+
+    public static void main(String[] args) {
+
+        // Matriz de adyacencia (grafo dirigido)
+        int[][] alcanzabilidad = new int[N][N];
+
+        // Inicializar la matriz con las conexiones dadas
+        alcanzabilidad[0][1] = 1;
+        alcanzabilidad[1][2] = 1;
+        alcanzabilidad[2][0] = 1;
+        alcanzabilidad[2][3] = 1;
+
+        // Aplicar el algoritmo de Warshall
+        for (int k = 0; k < N; k++) {
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    // Si hay camino de i → k y de k → j, entonces hay camino de i → j
+                    if (alcanzabilidad[i][k] == 1 && alcanzabilidad[k][j] == 1) {
+                        alcanzabilidad[i][j] = 1;
+                    }
+                }
+            }
+        }
+
+        // Mostrar la matriz de alcanzabilidad
+        System.out.println("Matriz de alcanzabilidad:");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                System.out.print(alcanzabilidad[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        // Verificar si el grafo es fuertemente conexo
+        boolean fuertementeConexo = true;
+        for (int i = 0; i < N && fuertementeConexo; i++) {
+            for (int j = 0; j < N; j++) {
+                if (alcanzabilidad[i][j] == 0) {
+                    fuertementeConexo = false;
+                    break;
+                }
+            }
+        }
+
+        // Mostrar resultado
+        if (fuertementeConexo) {
+            System.out.println("\nEl grafo es FUERTEMENTE CONEXO.");
+        } else {
+            System.out.println("\nEl grafo NO es fuertemente conexo.");
+        }
+    }
+}
+
+
