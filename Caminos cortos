@@ -1,0 +1,86 @@
+package javaapplication8;
+
+import java.util.*;
+
+public class CaminoCortoBFS {
+
+    public static void main(String[] args) {
+        int nodos = 6;
+
+        
+        int[][] grafo = new int[nodos][nodos];
+
+        
+        agregarConexion(grafo, 0, 1);
+        agregarConexion(grafo, 0, 2);
+        agregarConexion(grafo, 1, 3);
+        agregarConexion(grafo, 2, 3);
+        agregarConexion(grafo, 3, 4);
+        agregarConexion(grafo, 4, 5);
+
+        int inicio = 0;
+        int destino = 5;
+
+        encontrarCamino(grafo, inicio, destino);
+    }
+
+    
+    public static void agregarConexion(int[][] grafo, int a, int b) {
+        grafo[a][b] = 1;
+        grafo[b][a] = 1;
+    }
+
+    
+    public static void encontrarCamino(int[][] grafo, int inicio, int destino) {
+        int n = grafo.length;
+
+        boolean[] visitado = new boolean[n];
+        int[] anterior = new int[n];
+        Arrays.fill(anterior, -1);
+
+        Queue<Integer> cola = new LinkedList<>();
+        cola.add(inicio);
+        visitado[inicio] = true;
+
+     
+        while (!cola.isEmpty()) {
+            int actual = cola.poll();
+
+            if (actual == destino) {
+                break;
+            }
+
+            for (int i = 0; i < n; i++) {
+                if (grafo[actual][i] == 1 && !visitado[i]) {
+                    cola.add(i);
+                    visitado[i] = true;
+                    anterior[i] = actual;
+                }
+            }
+        }
+
+        
+        if (!visitado[destino]) {
+            System.out.println("No hay camino entre " + inicio + " y " + destino);
+            return;
+        }
+
+        
+        List<Integer> camino = new ArrayList<>();
+        for (int at = destino; at != -1; at = anterior[at]) {
+            camino.add(at);
+        }
+        Collections.reverse(camino);
+
+        
+        System.out.print("Camino más corto → ");
+        for (int i = 0; i < camino.size(); i++) {
+            System.out.print(camino.get(i));
+            if (i < camino.size() - 1) {
+                System.out.print(" → ");
+            }
+        }
+        System.out.println();
+    }
+}
+
