@@ -1,0 +1,87 @@
+package grafoscostominimo;
+
+import java.util.*;
+
+class Edge implements Comparable<Edge> {
+    int src, dest, weight;
+
+    public Edge(int src, int dest, int weight) {
+        this.src = src;
+        this.dest = dest;
+        this.weight = weight;
+    }
+
+    @Override
+    public int compareTo(Edge other) {
+        return Integer.compare(this.weight, other.weight);
+    }
+}
+
+public class KruskalMST {
+    static final int V = 6; // Número de vértices
+    static List<Edge> edges = Arrays.asList(
+        new Edge(0, 1, 6),
+        new Edge(0, 2, 1),
+        new Edge(0, 3, 5),
+        new Edge(1, 2, 2),
+        new Edge(1, 4, 5),
+        new Edge(2, 3, 2),
+        new Edge(2, 4, 6),
+        new Edge(3, 5, 4),
+        new Edge(4, 5, 3)
+    );
+
+    static int[] parent = new int[V];
+
+    static int find(int i) {
+        if (parent[i] != i)
+            parent[i] = find(parent[i]); // Path compression
+        return parent[i];
+    }
+
+    static void union(int x, int y) {
+        int xRoot = find(x);
+        int yRoot = find(y);
+        parent[xRoot] = yRoot;
+    }
+
+    public static void kruskalMST() {
+        List<Edge> result = new ArrayList<>();
+        int discarded = 0;
+        int totalCost = 0;
+
+        
+        for (int i = 0; i < V; i++) {
+            parent[i] = i;
+        }
+
+       
+        Collections.sort(edges);
+
+        for (Edge edge : edges) {
+            int x = find(edge.src);
+            int y = find(edge.dest);
+
+            if (x != y) {
+                result.add(edge);
+                totalCost += edge.weight;
+                union(x, y);
+            } else {
+                discarded++;
+            }
+        }
+
+        
+        System.out.println("KRUSKAL - Árbol de Expansión Mínima (MST)");
+        System.out.println("----------------------------------------");
+        for (Edge e : result) {
+            System.out.println("Arista seleccionada: " + e.src + " - " + e.dest + " (" + e.weight + ")");
+        }
+        System.out.println("\nNúmero de aristas descartadas (por formar ciclo): " + discarded);
+        System.out.println("Costo total del MST: " + totalCost);
+    }
+
+    public static void main(String[] args) {
+        kruskalMST();
+    }
+}
