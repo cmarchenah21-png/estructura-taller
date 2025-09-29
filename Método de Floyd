@@ -1,0 +1,87 @@
+package javaapplication10;
+
+public class MetodoFloyd {
+
+    static final int INF = 999999;
+
+    public static void main(String[] args) {
+        int n = 5; // Número de nodos (de 0 a 4)
+
+        
+        int[][] dist = new int[n][n];
+        int[][] camino = new int[n][n]; 
+
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j) {
+                    dist[i][j] = 0;
+                } else {
+                    dist[i][j] = INF;
+                }
+                camino[i][j] = -1;
+            }
+        }
+
+      
+        agregarArista(dist, camino, 0, 1, 10);
+        agregarArista(dist, camino, 0, 4, 3);
+        agregarArista(dist, camino, 1, 2, 2);
+        agregarArista(dist, camino, 1, 4, 4);
+        agregarArista(dist, camino, 2, 3, 9);
+        agregarArista(dist, camino, 3, 2, 7);
+        agregarArista(dist, camino, 4, 1, 1);
+        agregarArista(dist, camino, 4, 2, 8);
+        agregarArista(dist, camino, 4, 3, 2);
+
+        
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                        camino[i][j] = k;
+                    }
+                }
+            }
+        }
+
+      
+        System.out.println("Matriz de distancias más cortas:");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dist[i][j] == INF) {
+                    System.out.print("INF ");
+                } else {
+                    System.out.print(dist[i][j] + "   ");
+                }
+            }
+            System.out.println();
+        }
+
+        
+        System.out.println("\nCamino más corto de 0 a 3:");
+        System.out.print("0");
+        mostrarCamino(0, 3, camino);
+        System.out.println(" → 3");
+        System.out.println("Distancia total: " + dist[0][3]);
+    }
+
+    
+    public static void agregarArista(int[][] dist, int[][] camino, int desde, int hacia, int peso) {
+        dist[desde][hacia] = peso;
+    }
+
+    
+    public static void mostrarCamino(int i, int j, int[][] camino) {
+        if (camino[i][j] == -1) {
+            System.out.print(" → ");
+            return;
+        }
+        int k = camino[i][j];
+        mostrarCamino(i, k, camino);
+        System.out.print(k);
+        mostrarCamino(k, j, camino);
+    }
+}
+
