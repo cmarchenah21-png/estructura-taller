@@ -1,0 +1,110 @@
+package javaapplication6;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+
+public class MetodoKruskal {
+
+    
+    static class Arista implements Comparable<Arista> {
+        int origen, destino, peso;
+
+        public Arista(int origen, int destino, int peso) {
+            this.origen = origen;
+            this.destino = destino;
+            this.peso = peso;
+        }
+
+        
+        @Override
+        public int compareTo(Arista otra) {
+            return this.peso - otra.peso;
+        }
+
+        @Override
+        public String toString() {
+            return origen + " - " + destino + " : " + peso;
+        }
+    }
+
+    
+    static class UnionFind {
+        int[] padre;
+
+        public UnionFind(int n) {
+            padre = new int[n];
+            for (int i = 0; i < n; i++) {
+                padre[i] = i;
+            }
+        }
+
+        
+        int encontrar(int nodo) {
+            if (padre[nodo] != nodo) {
+                padre[nodo] = encontrar(padre[nodo]); 
+            }
+            return padre[nodo];
+        }
+
+        
+        boolean unir(int a, int b) {
+            int raizA = encontrar(a);
+            int raizB = encontrar(b);
+            if (raizA == raizB) {
+                return false; 
+            }
+            padre[raizB] = raizA;
+            return true;
+        }
+    }
+
+    public static void main(String[] args) {
+        int numNodos = 6; 
+
+        
+        List<Arista> aristas = new ArrayList<>();
+
+        
+        aristas.add(new Arista(0, 1, 4));
+        aristas.add(new Arista(0, 2, 4));
+        aristas.add(new Arista(1, 2, 2));
+        aristas.add(new Arista(1, 3, 5));
+        aristas.add(new Arista(2, 3, 8));
+        aristas.add(new Arista(2, 4, 10));
+        aristas.add(new Arista(3, 4, 2));
+        aristas.add(new Arista(3, 5, 6));
+        aristas.add(new Arista(4, 5, 3));
+
+        
+        Collections.sort(aristas);
+
+        UnionFind uf = new UnionFind(numNodos);
+        List<Arista> mst = new ArrayList<>();
+        int aristasDescartadas = 0;
+
+        
+        for (Arista arista : aristas) {
+            
+            if (uf.unir(arista.origen, arista.destino)) {
+                mst.add(arista);
+            } else {
+                
+                aristasDescartadas++;
+            }
+
+            
+            if (mst.size() == numNodos - 1) {
+                break;
+            }
+        }
+
+        
+        System.out.println("Aristas seleccionadas para el Árbol de Expansión Mínima:");
+        for (Arista a : mst) {
+            System.out.println(a);
+        }
+
+        System.out.println("Aristas descartadas por formar ciclo: " + aristasDescartadas);
+    }
+}
