@@ -1,0 +1,120 @@
+package javaapplication9;
+import java.util.*;
+
+public class Dijkstra {
+
+    
+    static class Arista {
+        int destino;
+        int peso;
+
+        public Arista(int destino, int peso) {
+            this.destino = destino;
+            this.peso = peso;
+        }
+    }
+
+    public static void main(String[] args) {
+        
+        int numNodos = 5;
+
+        
+        List<List<Arista>> grafo = new ArrayList<>();
+
+        
+        for (int i = 0; i < numNodos; i++) {
+            grafo.add(new ArrayList<>());
+        }
+
+        
+        grafo.get(0).add(new Arista(1, 10));
+        grafo.get(0).add(new Arista(4, 3));
+        grafo.get(1).add(new Arista(2, 2));
+        grafo.get(1).add(new Arista(4, 4));
+        grafo.get(2).add(new Arista(3, 9));
+        grafo.get(3).add(new Arista(2, 7));
+        grafo.get(4).add(new Arista(1, 1));
+        grafo.get(4).add(new Arista(2, 8));
+        grafo.get(4).add(new Arista(3, 2));
+
+        
+        int inicio = 0;
+
+        
+        dijkstra(grafo, inicio);
+    }
+
+    
+    public static void dijkstra(List<List<Arista>> grafo, int inicio) {
+        int n = grafo.size();
+
+        int[] distancia = new int[n]; 
+        boolean[] visitado = new boolean[n]; 
+        int[] anterior = new int[n]; 
+
+        Arrays.fill(distancia, Integer.MAX_VALUE); 
+        Arrays.fill(anterior, -1); 
+
+        
+        distancia[inicio] = 0;
+
+        
+        PriorityQueue<int[]> cola = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        cola.add(new int[]{0, inicio});
+
+        
+        while (!cola.isEmpty()) {
+            int[] actual = cola.poll();
+            int nodo = actual[1];
+
+            
+            if (visitado[nodo]) continue;
+            visitado[nodo] = true;
+
+            
+            for (Arista arista : grafo.get(nodo)) {
+                int vecino = arista.destino;
+                int peso = arista.peso;
+
+                
+                if (distancia[nodo] + peso < distancia[vecino]) {
+                    distancia[vecino] = distancia[nodo] + peso;
+                    anterior[vecino] = nodo; 
+                    cola.add(new int[]{distancia[vecino], vecino});
+                }
+            }
+        }
+
+       
+        System.out.println("Distancias mínimas desde el nodo " + inicio + ":");
+        for (int i = 0; i < n; i++) {
+            System.out.print("→ Nodo " + i + ": Distancia = " + distancia[i] + ", Camino = ");
+            mostrarCamino(anterior, i);
+            System.out.println();
+        }
+    }
+
+    
+    public static void mostrarCamino(int[] anterior, int destino) {
+        List<Integer> camino = new ArrayList<>();
+
+        
+        while (destino != -1) {
+            camino.add(destino);
+            destino = anterior[destino];
+        }
+
+        
+        Collections.reverse(camino);
+
+        
+        for (int i = 0; i < camino.size(); i++) {
+            System.out.print(camino.get(i));
+            if (i < camino.size() - 1) {
+                System.out.print(" → ");
+            }
+        }
+    }
+}
+
+
